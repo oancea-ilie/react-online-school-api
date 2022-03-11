@@ -38,7 +38,7 @@ export default class CourseService{
         
         let allCourses = await this.course.findAll();
 
-        if(course.name == null || course.description == null || course.time == null || course.materials == null){
+        if(course.name == null || course.description == null || course.time == null || course.materials == null || course.created_by == null){
             throw new Error("Propietati invalide!");
         }
         if(!course.name){
@@ -82,7 +82,7 @@ export default class CourseService{
     update= async(id, user)=>{
         let obj = await this.getById(id);
 
-        if(user.name == '' && user.description=='' && user.time == '' && user.materials == ''){
+        if(user.name == '' && user.description=='' && user.time == '' && user.materials == '' && user.created_by == ''){
             throw new Error("Nu exista propietati pentru update!");
         }
         if(obj){
@@ -98,6 +98,9 @@ export default class CourseService{
             }
             if(user.materials){
                 obj.materials = user.materials;
+            }
+            if(user.created_by){
+                obj.created_by = user.created_by;
             }
 
             await obj.save();

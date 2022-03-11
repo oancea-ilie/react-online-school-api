@@ -8,6 +8,9 @@ import CourseController from "./Controllers/CourseController.js";
 import StudentService from "../services/StudentService.js";
 import StudentController from "./Controllers/StudentController.js";
 
+import EnrolmentService from "../services/EnrolmentServices.js";
+import EnrolmentController from "./Controllers/EnrolmentController.js";
+
 export default  class Server{
 
     constructor( ){
@@ -44,6 +47,8 @@ export default  class Server{
             let studentService = new StudentService(db.models,db.sequelize);
             let studentController = new StudentController(studentService, this.app);
 
+            let enrolmentService = new EnrolmentService(db.models,db.sequelize);
+            let enrolmentController = new EnrolmentController(enrolmentService, this.app);
         });
 
 
