@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 
 export default class StudentService{
       
@@ -34,6 +35,20 @@ export default class StudentService{
 
     }
 
+    getStudentByEmail = async(email)=>{
+        let all = await this.student.findAll();
+
+        if(!all){
+            throw new Error("Nu exista studenti in baza de date !");
+        }else{
+            for(let e of all){
+                if(e.email == email){
+                    return e;
+                }
+            }
+        }
+    }
+
     create= async(newObj)=>{
         
         let allObj = await this.student.findAll();
@@ -67,7 +82,6 @@ export default class StudentService{
         }
 
     }
-
 
     delete=async(id)=>{
         let obj = await this.getById(id);
@@ -107,7 +121,22 @@ export default class StudentService{
         }
     }
 
+    login = async(obj)=>{
+        let all = await this.student.findAll();
 
+        if(all.length == 0){
+            throw new Error("Nu exista studenti in baza de date!");
+        }
+        else{
+            for(let e of all){
+                let authentificate = bcrypt.compareSync(obj.password,e.confirmedPassword);
+                if(authentificate && e.email == obj.email){
+                    return {message:"success"};
+                }
+            }
+            return {message:"failed"};
+        }
+    }
 
 
 }

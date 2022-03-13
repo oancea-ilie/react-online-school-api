@@ -40,12 +40,11 @@ export default  class Server{
                console.log(`Express server is listening on port 5000`);
             });
         }).then(()=>{
-            
-            let courseService = new CourseService(db.models,db.sequelize);
-            let courseController = new CourseController(courseService, this.app);
-
             let studentService = new StudentService(db.models,db.sequelize);
             let studentController = new StudentController(studentService, this.app);
+
+            let courseService = new CourseService(db.models,db.sequelize);
+            let courseController = new CourseController(courseService, this.app, studentService);
 
             let enrolmentService = new EnrolmentService(db.models,db.sequelize);
             let enrolmentController = new EnrolmentController(enrolmentService, this.app);

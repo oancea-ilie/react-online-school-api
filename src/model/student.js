@@ -1,5 +1,6 @@
-import { Sequelize } from "sequelize";
+import { DataTypes, Sequelize } from "sequelize";
 
+import bcrypt from "bcrypt"
 export default (sequelize)=>{
 
     class Student extends Sequelize.Model{}
@@ -48,10 +49,12 @@ export default (sequelize)=>{
                     msg:'email can not be empty!'
                 },
             },
+            unique: true
+
         },
 
         password:{
-            type:Sequelize.STRING,
+            type:DataTypes.VIRTUAL,
             allowNull: false,
             validate: {
                 notNull:{
@@ -61,6 +64,22 @@ export default (sequelize)=>{
                     msg:'password can not be empty!'
                 },
             },
+        },
+        
+        confirmedPassword:{
+            allowNull: false,
+            type:DataTypes.STRING,
+            set(val){
+                if(val==this.password){
+                    const hashPassword=bcrypt.hashSync(val,10);
+                    this.setDataValue('confirmedPassword',hashPassword);
+                }
+            },
+            validate:{
+                notNull:{
+                    msg:'Both password must match'
+                }
+            }
         }
         
     },{
