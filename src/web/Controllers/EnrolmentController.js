@@ -22,7 +22,7 @@ export default class EnrolmentController{
 
      getAll= async ()=>{
 
-         this.route.get("/", async (req,res,next)=>{
+         this.route.get("/", this.authentificate, async (req,res,next)=>{
              try{
 
                 let obj = await this.enrolmentServices.getAll();
@@ -82,7 +82,7 @@ export default class EnrolmentController{
     }
 
     update = async()=>{
-        this.route.put("/:id", async(req,res,next)=>{
+        this.route.put("/:id",this.authentificate, async(req,res,next)=>{
             try{
                 let {id} = req.params;
                 let user = req.body;
@@ -95,6 +95,45 @@ export default class EnrolmentController{
                 next(e);
             }
         });
+    }
+
+
+    authentificate=async (req,res,next)=>{
+
+        let message="";
+
+        const credentials=auth(req);
+
+        if(credentials){
+
+            const user= await this.studentServices.getStudentByEmail(credentials.name);
+
+            if(user){
+                const authentificate = bcrypt.compareSync(credentials.pass,user.confirmedPassword);
+
+                if(authentificate){
+
+                    console.log("autentificat")
+                    req.currentUser=user;
+                }else{
+
+                    message="Authentification failed"
+                }
+            }else{
+                message= "User not found"
+            }
+        }else{
+            message = "Authentification header not found"
+        }
+
+
+        if(message){
+            console.warn(message);
+            res.status(401).json({message:'Access denied from authentification'})
+        }else{
+            next();
+        }
+
     }
 
     catchErr=async()=>{

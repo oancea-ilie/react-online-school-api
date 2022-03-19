@@ -26,7 +26,7 @@ export default class StudentController{
 
     getAll= async ()=>{
 
-         this.route.get("/", async (req,res,next)=>{
+         this.route.get("/", this.authentificate, async (req,res,next)=>{
              try{
 
                 let obj = await this.studentServices.getAll();

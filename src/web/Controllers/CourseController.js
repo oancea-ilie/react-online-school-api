@@ -41,7 +41,7 @@ export default class CourseController{
     }
 
     getById= async()=>{
-        this.route.get("/:id", async (req,res,next)=>{
+        this.route.get("/:id", this.authentificate, async (req,res,next)=>{
             try{
                 let {id}= req.params;
 
@@ -100,18 +100,6 @@ export default class CourseController{
         });
     }
 
-    catchErr=async()=>{
-        this.route.use((err,req,res,next)=>{
-            res.status(err.status || 500);
-    
-            res.json({
-               error:{
-                   message:err.message
-               }
-            });
-         });
-    }
-
     authentificate=async (req,res,next)=>{
 
         let message="";
@@ -143,13 +131,24 @@ export default class CourseController{
 
         if(message){
             console.warn(message);
-            res.status(401).json({message:'Access denied'})
+            res.status(401).json({message:'Access denied from authentification'})
         }else{
             next();
         }
 
     }
 
+    catchErr=async()=>{
+        this.route.use((err,req,res,next)=>{
+            res.status(err.status || 500);
+    
+            res.json({
+               error:{
+                   message:err.message
+               }
+            });
+         });
+    }
 
 
 }
